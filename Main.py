@@ -2,10 +2,6 @@ import requests
 import pandas as pd
 import mysql.connector
 from datetime import datetime
-
-# ---------------------------
-# 🔧 MySQL Configuration
-# ---------------------------
 MYSQL_CONFIG = {
     'host': 'localhost',
     'user': 'root',
@@ -13,9 +9,6 @@ MYSQL_CONFIG = {
     'database': 'crypto_dashboard'
 }
 
-# ---------------------------
-# 📥 Fetch Market Data
-# ---------------------------
 def fetch_market_data():
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
@@ -36,9 +29,6 @@ def fetch_market_data():
     df['fetch_time'] = datetime.now()
     return df
 
-# ---------------------------
-# 🌐 Fetch Global Dominance Data
-# ---------------------------
 def fetch_global_data():
     url = "https://api.coingecko.com/api/v3/global"
     response = requests.get(url)
@@ -56,9 +46,7 @@ def fetch_global_data():
     dom_df['total_volume_usd'] = total_volume
     return dom_df
 
-# ---------------------------
-# 📈 Get Top Gainers/Losers
-# ---------------------------
+
 def extract_top_movers(df, top_n=10):
     sorted_df = df[['id', 'name', 'symbol', 'price_change_percentage_24h']].copy()
     sorted_df = sorted_df.dropna(subset=['price_change_percentage_24h'])
@@ -69,9 +57,7 @@ def extract_top_movers(df, top_n=10):
     top_losers['fetch_time'] = datetime.now()
     return top_gainers, top_losers
 
-# ---------------------------
-# 💾 Save to MySQL
-# ---------------------------
+
 def save_dataframe_to_mysql(df, table_name, schema_sql):
     conn = mysql.connector.connect(**MYSQL_CONFIG)
     cursor = conn.cursor()
@@ -91,9 +77,7 @@ def save_dataframe_to_mysql(df, table_name, schema_sql):
     conn.close()
     print(f"✅ Inserted into `{table_name}`")
 
-# ---------------------------
-# 🚀 Main
-# ---------------------------
+
 if __name__ == "__main__":
     print("📡 Fetching data from Coingecko...")
 
